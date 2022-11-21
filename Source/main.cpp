@@ -1,4 +1,4 @@
-// Copyright Snaps 2022.
+// Copyright Snaps 2022. All Rights Reserved.
 
 #include <iostream>
 
