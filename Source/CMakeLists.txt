@@ -1,2 +1,2 @@
 
-add_executable(VoxelEngine main.cpp)
+add_executable(VoxelEngine Main.cpp)
