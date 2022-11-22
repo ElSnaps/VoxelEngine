@@ -1,8 +1,6 @@
 // Copyright Snaps 2022. All Rights Reserved.
 
-#include "Engine.h"
-
-#include <iostream>
+#include "Application.h"
 
 /*
 	Main handles all our entry points for launching into our application on various
@@ -11,7 +9,6 @@
 
 int main()
 {
-	std::cout << "Test";
-	std::cin.get();
+	FApp::Initialize();
     return 0;
 }
