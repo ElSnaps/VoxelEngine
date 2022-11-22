@@ -1,2 +1,4 @@
+# Copyright Snaps 2022, All Rights Reserved.
 
-add_executable(VoxelEngine Main.cpp)
+# Add module subdirectories
+add_subdirectory(CoreEngine)
