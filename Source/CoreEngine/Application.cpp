@@ -5,7 +5,7 @@
 
 std::unique_ptr<FApp> FApp::AppSingleton;
 
-int FApp::Initialize()
+int FApp::Initialize(HINSTANCE hInstance, int32 nCmdShow)
 {
 	FApp::AppSingleton = std::make_unique<FApp>();
 	FApp* App = FApp::Get();

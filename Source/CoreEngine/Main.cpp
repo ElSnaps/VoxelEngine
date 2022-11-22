@@ -1,5 +1,6 @@
 // Copyright Snaps 2022. All Rights Reserved.
 
+#include "CoreMinimal.h"
 #include "Application.h"
 
 /*
@@ -7,7 +8,8 @@
 	platform architectures, Aka windows or linux entry points will exist in here.
 */
 
-int main()
+_Use_decl_annotations_
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-	return FApp::Initialize();
+	return FApp::Initialize(hInstance, nCmdShow);
 }

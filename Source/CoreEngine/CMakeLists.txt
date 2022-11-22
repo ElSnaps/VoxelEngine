@@ -23,12 +23,27 @@ macro(GroupSources curdir)
 endmacro()
 
 ############################################################################################################
-# MODULE SETUP
+# CORE ENGINE MODULE SETUP
 ############################################################################################################
 
 # Recursively find all source files within CoreEngine module
 file(GLOB_RECURSE CoreEngineSrcs "*.c" "*.cpp" "*.h" "*.hpp")
 add_executable(VoxelEngine ${CoreEngineSrcs})
+
+#include_directories("C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64")
+#link_directories("C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64")
+
+#ADD_LIBRARY(CoreEngine 
+#    d3d12.lib
+#    dxgi.lib
+#    d3dcompiler.lib
+#)
+
+# Link Libraries
+#target_link_libraries(CoreEngine d3d12)
+#target_link_libraries(CoreEngine dxgi)
+#target_link_libraries(CoreEngine d3dcompiler)
+
 
 # Setup filters in sln so that folders appear the same as in explorer
 GroupSources(Source)

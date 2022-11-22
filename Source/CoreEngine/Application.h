@@ -26,7 +26,7 @@ public:
 	EAppState 					AppState = EAppState::None;
 	std::shared_ptr<FEngine> 	GEngine;
 
-	static int Initialize();
+	static int Initialize(HINSTANCE hInstance, int32 nCmdShow);
 
 	static FApp* Get()
 	{
