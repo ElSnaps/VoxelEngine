@@ -9,6 +9,5 @@
 
 int main()
 {
-	FApp::Initialize();
-    return 0;
+	return FApp::Initialize();
 }

@@ -5,22 +5,26 @@
 
 std::unique_ptr<FApp> FApp::AppSingleton;
 
-void FApp::Initialize()
+int FApp::Initialize()
 {
 	FApp::AppSingleton = std::make_unique<FApp>();
-	FApp* AppInst = FApp::Get();
+	FApp* App = FApp::Get();
 
-	AppInst->AppState = EAppState::Starting;
+	App->AppState = EAppState::Starting;
 
 	// Do app setup here like create window ect.
 
-	// Create Engine
-	AppInst->GEngine = std::make_shared<FEngine>();
-	AppInst->GEngine.get()->Initialize();
-
-	AppInst->AppState = EAppState::Running;
-	while(AppInst->AppState != EAppState::Exiting)
+	// Create Engine and Initialize. Process will exit if Engine init fails.
+	App->GEngine = std::make_shared<FEngine>();
+	if(!App->GEngine.get()->Initialize())
 	{
-	
+		return 1;
 	}
+
+	App->AppState = EAppState::Running;
+	while(App->AppState != EAppState::Exiting)
+	{
+		App->GEngine.get()->Tick();
+	}
+	return 0;
 }

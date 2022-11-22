@@ -11,4 +11,5 @@ class FEngine
 public:
 
 	bool Initialize();
+	void Tick();
 };
