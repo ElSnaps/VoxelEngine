@@ -28,22 +28,36 @@ endmacro()
 
 # Recursively find all source files within CoreEngine module
 file(GLOB_RECURSE CoreEngineSrcs "*.c" "*.cpp" "*.h" "*.hpp")
-add_executable(VoxelEngine ${CoreEngineSrcs})
+add_executable(VoxelEngine WIN32 ${CoreEngineSrcs})
 
-#include_directories("C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64")
-#link_directories("C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64")
+target_include_directories(VoxelEngine
+    PRIVATE 
+        ${PROJECT_SOURCE_DIR}/Source/ThirdParty/SDL2/Include
+)
 
-#ADD_LIBRARY(CoreEngine 
-#    d3d12.lib
-#    dxgi.lib
-#    d3dcompiler.lib
-#)
+target_link_directories(VoxelEngine
+    PRIVATE 
+        ${PROJECT_SOURCE_DIR}/Source/ThirdParty/SDL2/Lib
+)
 
-# Link Libraries
-#target_link_libraries(CoreEngine d3d12)
-#target_link_libraries(CoreEngine dxgi)
-#target_link_libraries(CoreEngine d3dcompiler)
+target_link_libraries(VoxelEngine
+    PRIVATE 
+        d3d12.lib
+        dxgi.lib
+        d3dcompiler.lib
+        SDL2.lib
+        SDL2
+)
 
+# Copy SDL dll next to .exe
+if(WIN32)
+    add_custom_command(
+        TARGET VoxelEngine POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+        ${PROJECT_SOURCE_DIR}/Source/ThirdParty/SDL2/Lib/SDL2.dll $<TARGET_FILE_DIR:VoxelEngine> 
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 # Setup filters in sln so that folders appear the same as in explorer
 GroupSources(Source)

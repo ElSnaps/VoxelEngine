@@ -6,6 +6,7 @@
 #include <Memory>
 
 class FEngine;
+struct SDL_Window;
 
 enum class EAppState : uint8_t
 {
@@ -34,6 +35,8 @@ public:
 	}
 
 private:
+
+	SDL_Window* Window = nullptr;
 
 	static std::unique_ptr<FApp> AppSingleton;
 };
