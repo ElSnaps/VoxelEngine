@@ -23,7 +23,7 @@ int FApp::Initialize(HINSTANCE hInstance, int32 nCmdShow)
 		SDL_WINDOWPOS_UNDEFINED, 				// ScreenPos Y (Don't care)
 		AppDefaults::WindowWidth, 				// Window width in pixels
 		AppDefaults::WindowHeight, 				// Window height in pixels
-		(SDL_WindowFlags)(SDL_WINDOW_RESIZABLE) // Set window flags
+		(SDL_WindowFlags)(SDL_WINDOW_VULKAN) 	// Set window flags
 	);
 
 	// Create engine and initialize. Process will exit if engine init fails.
@@ -58,7 +58,7 @@ void FApp::OnShutdown()
 	SDL_DestroyWindow(Window);
 }
 
-void FApp::SetRenderTexture()
+void FApp::SetWindowTexture()
 {
 
 }

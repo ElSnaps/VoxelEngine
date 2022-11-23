@@ -42,9 +42,6 @@ target_link_directories(VoxelEngine
 
 target_link_libraries(VoxelEngine
     PRIVATE 
-        d3d12.lib
-        dxgi.lib
-        d3dcompiler.lib
         SDL2.lib
         SDL2
 )

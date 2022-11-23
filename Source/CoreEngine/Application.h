@@ -40,7 +40,7 @@ public:
 		return FApp::AppSingleton.get();
 	}
 
-	void SetRenderTexture();
+	void SetWindowTexture();
 
 private:
 
