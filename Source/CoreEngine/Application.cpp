@@ -21,8 +21,8 @@ int FApp::Initialize(HINSTANCE hInstance, int32 nCmdShow)
 		"Voxel Engine", 						// Window title
 		SDL_WINDOWPOS_UNDEFINED, 				// ScreenPos X (Don't care)
 		SDL_WINDOWPOS_UNDEFINED, 				// ScreenPos Y (Don't care)
-		AppDefaults::WindowWidth, 				// Window width in pixels
-		AppDefaults::WindowHeight, 				// Window height in pixels
+		AppSettings::WindowWidth, 				// Window width in pixels
+		AppSettings::WindowHeight, 				// Window height in pixels
 		(SDL_WindowFlags)(SDL_WINDOW_VULKAN) 	// Set window flags
 	);
 
@@ -48,12 +48,15 @@ int FApp::Initialize(HINSTANCE hInstance, int32 nCmdShow)
 			}
 		}
 	}
-	App->OnShutdown(); // Run all shutdown prereqs & cleanup.
+	App->Shutdown(); // Run all shutdown prereqs & cleanup.
 	return 0;
 }
 
-void FApp::OnShutdown()
+void FApp::Shutdown()
 {
+	// Shutdown engine
+	GEngine.get()->Shutdown();
+
 	// Kill the active SDL window.
 	SDL_DestroyWindow(Window);
 }

@@ -11,6 +11,11 @@ bool FEngine::Initialize()
 	return true;
 }
 
+void FEngine::Shutdown()
+{
+	Renderer.get()->Shutdown();
+}
+
 void FEngine::Tick()
 {
 	if(Renderer.get()) // Draw the render texture.

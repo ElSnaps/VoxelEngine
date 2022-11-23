@@ -7,10 +7,11 @@
 class FEngine;
 struct SDL_Window;
 
-namespace AppDefaults
+namespace AppSettings
 {
-	static int32 WindowWidth 	= 500;
-	static int32 WindowHeight 	= 500;
+	static int32 	WindowWidth 	= 500;
+	static int32 	WindowHeight 	= 500;
+	static bool		VSync 			= true;
 }
 
 enum class EAppState : uint8_t
@@ -33,7 +34,7 @@ public:
 	std::shared_ptr<FEngine> 	GEngine;
 
 	static int 	Initialize(HINSTANCE hInstance, int32 nCmdShow);
-	void 		OnShutdown();
+	void 		Shutdown();
 
 	static FApp* Get()
 	{
@@ -42,9 +43,9 @@ public:
 
 	void SetWindowTexture();
 
-private:
-
 	SDL_Window* Window = nullptr;
+
+private:
 
 	static std::unique_ptr<FApp> AppSingleton;
 };

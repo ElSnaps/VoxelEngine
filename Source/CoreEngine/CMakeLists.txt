@@ -33,17 +33,19 @@ add_executable(VoxelEngine WIN32 ${CoreEngineSrcs})
 target_include_directories(VoxelEngine
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/Source/ThirdParty/SDL2/Include
+        ${PROJECT_SOURCE_DIR}/Source/ThirdParty/Vulkan/Include
 )
 
 target_link_directories(VoxelEngine
     PRIVATE 
         ${PROJECT_SOURCE_DIR}/Source/ThirdParty/SDL2/Lib
+        ${PROJECT_SOURCE_DIR}/Source/ThirdParty/Vulkan/Lib
 )
 
 target_link_libraries(VoxelEngine
     PRIVATE 
         SDL2.lib
-        SDL2
+        vulkan-1.lib
 )
 
 # Copy SDL dll next to .exe

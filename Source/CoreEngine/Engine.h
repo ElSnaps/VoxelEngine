@@ -15,6 +15,7 @@ class FEngine
 public:
 
 	bool Initialize();
+	void Shutdown();
 	void Tick();
 
 private:
