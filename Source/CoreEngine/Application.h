@@ -3,10 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <Memory>
 
 class FEngine;
 struct SDL_Window;
+
+namespace AppDefaults
+{
+	static int32 WindowWidth 	= 500;
+	static int32 WindowHeight 	= 500;
+}
 
 enum class EAppState : uint8_t
 {
@@ -27,12 +32,15 @@ public:
 	EAppState 					AppState = EAppState::None;
 	std::shared_ptr<FEngine> 	GEngine;
 
-	static int Initialize(HINSTANCE hInstance, int32 nCmdShow);
+	static int 	Initialize(HINSTANCE hInstance, int32 nCmdShow);
+	void 		OnShutdown();
 
 	static FApp* Get()
 	{
 		return FApp::AppSingleton.get();
 	}
+
+	void SetRenderTexture();
 
 private:
 

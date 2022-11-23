@@ -7,6 +7,7 @@
 */
 
 #include <stdint.h>
+#include <Memory>
 
 using uint8 	= uint8_t;
 using uint16 	= uint16_t;
