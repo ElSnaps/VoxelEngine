@@ -6,6 +6,8 @@
 #include "vulkan.h"
 #include <vector>
 
+#define VK_TIME_SECOND		1000000000
+
 /*
 	Render is responsible for rendering the game and talking to
 	FApp and SDL in order to draw to the main game window.
@@ -14,14 +16,14 @@ class FRenderer
 {
 public:
 
+	FRenderer();
+
 	void Initialize();
 	void Shutdown();
-	void SetupSwapchain();
 	void Draw();
 
 protected:
 
-	// @TODO: Feels like these should be smart ptrs.
 	VkInstance 					VulkanInstance;
 	VkDebugUtilsMessengerEXT 	VulkanDebugMessenger;
 	VkPhysicalDevice 			VulkanCurrentGPU;
@@ -33,4 +35,27 @@ protected:
 	std::vector<VkImage>		VulkanSwapchainImages;
 	std::vector<VkImageView>	VulkanSwapchainImageViews;
 
+	VkQueue						VulkanGraphicsQueue;
+	uint32						VulkanGraphicsQueueFamily;
+	VkCommandPool				VulkanCommandPool;
+	VkCommandBuffer				VulkanMainCommandBuffer;
+
+	VkRenderPass				VulkanRenderPass;
+	std::vector<VkFramebuffer>	VulkanFrameBuffers;
+
+	VkSemaphore					VulkanPresentSemaphore;
+	VkSemaphore					VulkanRenderSemaphore;
+	VkFence						VulkanRenderFence;
+	int32						VulkanFrameNumber;
+
+private:
+
+	void SetupVulkan();
+	void SetupSwapchain();
+	void SetupCommands();
+	void SetupRenderPass();
+	void SetupFrameBuffers();
+	void SetupSyncStructures();
+
+	bool bHasInitialized = false;
 };

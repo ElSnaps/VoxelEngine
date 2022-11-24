@@ -54,7 +54,7 @@ int FApp::Initialize(HINSTANCE hInstance, int32 nCmdShow)
 
 void FApp::Shutdown()
 {
-	// Shutdown engine
+	// Shutdown engine.
 	GEngine.get()->Shutdown();
 
 	// Kill the active SDL window.

@@ -13,6 +13,7 @@ bool FEngine::Initialize()
 
 void FEngine::Shutdown()
 {
+	// Shutdown renderer allowing graceful cleanup.
 	Renderer.get()->Shutdown();
 }
 
