@@ -41,10 +41,18 @@ void FRenderer::Initialize()
 // then we won't see what went wrong, we just get a dirty callstack.
 void FRenderer::Shutdown()
 {
+	// Make sure the GPU has stopped doing it's tasks.
+	vkDeviceWaitIdle(VulkanCurrentDevice);
+
 	vkDestroyCommandPool(VulkanCurrentDevice, VulkanCommandPool, nullptr);
+
+	// Destroy sync objects
+	vkDestroyFence(VulkanCurrentDevice, VulkanRenderFence, nullptr);
+	vkDestroySemaphore(VulkanCurrentDevice, VulkanRenderSemaphore, nullptr);
+	vkDestroySemaphore(VulkanCurrentDevice, VulkanPresentSemaphore, nullptr);
+
 	vkDestroySwapchainKHR(VulkanCurrentDevice, VulkanSwapchain, nullptr);
 
-	// Destroy the main renderpass.
 	vkDestroyRenderPass(VulkanCurrentDevice, VulkanRenderPass, nullptr);
 
 	// Destroy swapchain resources.
@@ -63,8 +71,9 @@ void FRenderer::Shutdown()
 		);
 	}
 
-	vkDestroyDevice(VulkanCurrentDevice, nullptr);
 	vkDestroySurfaceKHR(VulkanInstance, VulkanWindowSurface, nullptr);
+
+	vkDestroyDevice(VulkanCurrentDevice, nullptr);
 	vkb::destroy_debug_utils_messenger(VulkanInstance, VulkanDebugMessenger);
 	vkDestroyInstance(VulkanInstance, nullptr);
 }
@@ -86,9 +95,9 @@ void FRenderer::SetupVulkan()
 	VulkanDebugMessenger = NewInstance.debug_messenger;
 
 	// Get surface of our main app window
-	SDL_Vulkan_CreateSurface( // @TODO: This might exist inside Vk SDL ext.
+	SDL_Vulkan_CreateSurface(
 	    FApp::Get()->Window,
-	    NewInstance, 
+	    VulkanInstance, 
 	    &VulkanWindowSurface
 	);
 
@@ -196,13 +205,23 @@ void FRenderer::SetupRenderPass()
 	SubPass.colorAttachmentCount = 1;
 	SubPass.pColorAttachments = &ColorAttachmentRef;
 
+	// 1 Dependency, which is from the "outside" into the subpass. And we can read or write color
+	VkSubpassDependency Dependency {};
+	Dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	Dependency.dstSubpass = 0;
+	Dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	Dependency.srcAccessMask = 0;
+	Dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	Dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
 	VkRenderPassCreateInfo RenderPassInfo {};
 	RenderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-
 	RenderPassInfo.attachmentCount = 1;					// Connect the color attachment to the info.
 	RenderPassInfo.pAttachments = &ColorAttachment;
 	RenderPassInfo.subpassCount = 1;					// Connect the subpass to the info.
 	RenderPassInfo.pSubpasses = &SubPass;
+	RenderPassInfo.dependencyCount = 1;
+	RenderPassInfo.pDependencies = &Dependency;
 
 	VK_CHECK(vkCreateRenderPass(
 		VulkanCurrentDevice, 
@@ -287,6 +306,11 @@ void FRenderer::Draw()
 		return;
 	}
 
+	if(SDL_GetWindowFlags(FApp::Get()->Window) & SDL_WINDOW_MINIMIZED)
+	{
+		return;
+	}
+
 	// Wait until GPU has finished rendering last frame. Timeout of 1 sec.
 	VK_CHECK(vkWaitForFences(
 		VulkanCurrentDevice, 
@@ -302,6 +326,9 @@ void FRenderer::Draw()
 		&VulkanRenderFence
 	));
 
+	// Now we are sure commands finished exec, it's safe to reset command buffer and begin recording.
+	VK_CHECK(vkResetCommandBuffer(VulkanMainCommandBuffer, 0));
+
 	// Request image from the swapchain, Timeout of 1 sec.
 	VK_CHECK(vkAcquireNextImageKHR(
 		VulkanCurrentDevice,
@@ -311,9 +338,6 @@ void FRenderer::Draw()
 		nullptr,
 		&SwapchainImageIndex
 	));
-
-	// Now we are sure commands finished exec, it's safe to reset command buffer and begin recording.
-	VK_CHECK(vkResetCommandBuffer(VulkanMainCommandBuffer, 0));
 
 	// Victor does this to shorten the name in code, but I don't likez it.
 	// Not entirely sure if the copy is required here, don't think so.
@@ -358,6 +382,8 @@ void FRenderer::Draw()
 	RenderPassInfo.pClearValues = &ClearValue;
 
 	vkCmdBeginRenderPass(VulkanMainCommandBuffer, &RenderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+	// @TODO: Once we start adding render cmds, they will go here.
 
 	// Finalize the render pass
 	vkCmdEndRenderPass(VulkanMainCommandBuffer);
